@@ -6,6 +6,9 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {Form} from "@/components/ui/form";
 import CustomFormField, {FormFieldType} from "@/components/CustomFormField";
 import SubmitButton from "@/components/SubmitButton";
+import {createUser} from "@/lib/action/patientAction";
+import {useToast} from "@/hooks/use-toast";
+import {useRouter} from "next/navigation";
 
 const PatientForm = () => {
     const form = useForm<PatientFormSchemaType>(
@@ -20,9 +23,20 @@ const PatientForm = () => {
         }
     );
 
-    const onSubmit: SubmitHandler<PatientFormSchemaType> = (value) => {
+    const {toast} = useToast();
+    const router = useRouter();
+
+    const onSubmit: SubmitHandler<PatientFormSchemaType> = async (value) => {
         console.log(value);
-        form.reset();
+        const user = await createUser({phone: value.phone, email: value.email, name: value.name});
+        if (user) {
+            toast({title: "User creation success", variant: "default"})
+            form.reset();
+            router.push(`/patient/${user.$id}/register`)
+        } else {
+            toast({title: "User creation failed", variant: "destructive"})
+        }
+
     }
     console.log("form rendering")
 
