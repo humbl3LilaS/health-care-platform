@@ -54,7 +54,6 @@ const PatientForm = () => {
                     iconAlt={"user"}
                 />
                 {/*name end*/}
-
                 {/*Email*/}
                 <CustomFormField
                     name={"email"}
@@ -86,7 +85,8 @@ const PatientForm = () => {
                 </SubmitButton>
             </form>
         </Form>
-    );
+    )
+        ;
 };
 
 export default PatientForm;
