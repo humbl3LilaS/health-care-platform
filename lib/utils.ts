@@ -5,9 +5,17 @@ export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
-export const parseStringify = <T> (value: T) => JSON.parse(JSON.stringify(value));
+export const parseStringify = <T>(value: T) => JSON.parse(JSON.stringify(value));
 
 export const convertFileToUrl = (file: File) => URL.createObjectURL(file);
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const extractValidValue = <T extends Record<string, any>>(value: T): Partial<T> => {
+    return Object.fromEntries(
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        Object.entries(value).filter(([_, value]) => value !== '')
+    ) as Partial<T>;
+}
 
 // FORMAT DATE TIME
 export const formatDateTime = (dateString: Date | string, timeZone: string = Intl.DateTimeFormat()

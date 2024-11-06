@@ -10,7 +10,10 @@ import {format} from "date-fns";
 import {Button} from "@/components/ui/button";
 import {Calendar} from "@/components/ui/calendar";
 import {cn} from "@/lib/utils";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
+import {Select, SelectContent, SelectTrigger, SelectValue} from "@/components/ui/select";
+import {Textarea} from "@/components/ui/textarea";
+import {ReactNode} from "react";
+import {Checkbox} from "@/components/ui/checkbox";
 
 export const enum FormFieldType {
     INPUT = 'input',
@@ -18,29 +21,38 @@ export const enum FormFieldType {
     DATE_INPUT = "dateInput",
     RADIO_INPUT = "radioInput",
     CHECKBOX = 'checkbox',
-    SKELETON = 'skeleton',
     SELECT = "select"
 }
 
 
-type CustomFormFieldProps<T extends FormFieldType> = {
+type CustomFormFieldProps = {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     control: Control<any>;
     name: string;
     label?: string;
     placeholder?: string;
-    iconSrc?: string;
-    iconAlt?: string;
     disabled?: boolean;
-    fieldType: T;
-    type?: T extends FormFieldType.INPUT ? string : never;
-    option?: T extends FormFieldType.RADIO_INPUT ? string[] : T extends FormFieldType.SELECT
-                                                              ? Array<Record<string, string>> : never;
+} & (
+    {
+        fieldType: FormFieldType.INPUT,
+        iconSrc?: string;
+        iconAlt?: string;
+        type?: string
+    } |
+    { fieldType: FormFieldType.SELECT, optionRender: ReactNode | ReactNode[]; } |
+    {
+        fieldType: FormFieldType.RADIO_INPUT,
+        option: string[]
+    } |
+    { fieldType: FormFieldType.DATE_INPUT } | { fieldType: FormFieldType.TEXTAREA } | {
+    fieldType: FormFieldType.CHECKBOX
 }
+    )
 
-const RenderInput = <T extends FormFieldType>({field, props}: {
+
+const RenderInput = ({field, props}: {
     field: ControllerRenderProps<FieldValues, string>,
-    props: CustomFormFieldProps<T>
+    props: CustomFormFieldProps
 }) => {
     switch (props.fieldType) {
         case FormFieldType.INPUT:
@@ -114,9 +126,6 @@ const RenderInput = <T extends FormFieldType>({field, props}: {
                 </PopoverContent>
             </Popover>
         case FormFieldType.SELECT:
-            if (!props.option) {
-                throw new Error("Option missing")
-            }
             return <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl className={"shad-select-trigger"}>
                     <SelectTrigger className={"shad-input"}>
@@ -124,35 +133,42 @@ const RenderInput = <T extends FormFieldType>({field, props}: {
                     </SelectTrigger>
                 </FormControl>
                 <SelectContent className={"shad-select-content"}>
-                    {
-                        (
-                            props.option as Record<string, string>[]
-                        ).map((item) =>
-                                  <SelectItem value={item?.name} key={item?.name}>
-                                      <p className={"flex cursor-pointer items-center gap-2"}>
-                                          <Image src={item?.image}
-                                                 alt={item?.name}
-                                                 width={32}
-                                                 height={32}
-                                                 className={"rounded-full border border-dark-400"}
-                                          />
-                                          <span>{item?.name}</span>
-                                      </p>
-                                  </SelectItem>)
-                    }
+                    {props.optionRender}
                 </SelectContent>
             </Select>
+        case FormFieldType.TEXTAREA:
+            return <FormControl>
+                <Textarea
+                    placeholder={props.placeholder}
+                    className={"shad-textArea"}
+                    {...field}
+                />
+            </FormControl>
+        case FormFieldType.CHECKBOX:
+            return <FormControl>
+                <div className={"flex items-center gap-x-4"}>
+                    <Checkbox
+                        id={props.name}
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                    />
+                    <Label className={"checkbox-label"} htmlFor={props.name}>
+                        {props.label}
+                    </Label>
+                </div>
+            </FormControl>
     }
 }
 
-const CustomFormField = <T extends FormFieldType>(props: CustomFormFieldProps<T>) => {
+const CustomFormField = (props: CustomFormFieldProps) => {
     return (
         <FormField
             control={props.control}
             name={props.name}
             render={({field}) =>
                 <FormItem className={"mb-4 last:mb-0"}>
-                    {props.label && <FormLabel className={"shad-input-label"}>{props.label}</FormLabel>}
+                    {props.label && props.fieldType !== FormFieldType.CHECKBOX &&
+                        <FormLabel className={"shad-input-label"}>{props.label}</FormLabel>}
 
                     <RenderInput field={field} props={props}/>
 

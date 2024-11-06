@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import RegisterForm from "@/components/form/RegisterForm";
 import {getUser} from "@/lib/action/patientAction";
 import {notFound} from "next/navigation";
@@ -12,8 +11,8 @@ const UserRegisterPage = async ({params}: { params: Promise<{ userId: string }> 
 
     return (
         <div className={"h-screen max-h-screen flex"}>
-            <section className={"container my-auto remove-scrollbar"}>
-                <div className={"max-w-[496px] sub-container"}>
+            <section className={"container  remove-scrollbar"}>
+                <div className={"max-w-[496px] sub-container pb-10"}>
 
                     <header>
                         {/*logo*/}
@@ -29,11 +28,6 @@ const UserRegisterPage = async ({params}: { params: Promise<{ userId: string }> 
                     {/*form*/}
                     <RegisterForm user={user}/>
 
-
-                    <div className={"mt-20 flex justify-between text-14-regular"}>
-                        <p className={"justify-items-end text-dark-600 xl:text-left"}>&copy; {new Date().getFullYear()} CarePulse</p>
-                        <Link href={"/?admin=true"} className={"text-green-500"}>Admin</Link>
-                    </div>
                 </div>
             </section>
             <Image
