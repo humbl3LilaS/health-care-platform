@@ -27,7 +27,6 @@ const PatientForm = () => {
     const router = useRouter();
 
     const onSubmit: SubmitHandler<PatientFormSchemaType> = async (value) => {
-        console.log(value);
         const user = await createUser({phone: value.phone, email: value.email, name: value.name});
         if (user) {
             toast({title: "User creation success", variant: "default"})
@@ -38,7 +37,6 @@ const PatientForm = () => {
         }
 
     }
-    console.log("form rendering")
 
     return (
         <Form {...form}>

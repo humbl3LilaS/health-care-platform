@@ -54,7 +54,7 @@ const RegisterForm = ({user}: RegisterFormProps) => {
         const patient = await registerPatient({userId, payload: {...patientInfo}, formData});
         if (patient) {
             toast({title: "Patient Creation Success"})
-            router.push(`/patients/${user.$id}/new-appointment`)
+            router.push(`/patient/${user.$id}/new-appointment`)
         } else {
             toast({title: "Patient Creation Failed", variant: "destructive"})
         }

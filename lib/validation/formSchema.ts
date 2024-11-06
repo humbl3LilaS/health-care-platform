@@ -49,29 +49,37 @@ export const RegisterFormSchema = z.object(
                                      arg => arg.length > 0,
                                      {message: "Please upload document for further indetification"}
                                  ),
+        treatmentConsent: z.boolean()
+                           .refine(arg => arg, {message: "We can treat you if you don't consent treatment"}),
+        privacyConsent: z.boolean().optional(),
+        disclosureConsent: z.boolean().optional(),
+
     }
 )
 
 export type RegisterFormSchemaType = Zod.infer<typeof RegisterFormSchema>;
 
 export const RegisterFormDefaultValues: WithRequired<RegisterFormSchemaType> = {
-    name: "Super Edelweiss",
-    email: "sabishinekobebe@gmail.com",
-    phone: "09773543961",
+    name: "",
+    email: "",
+    phone: "",
     dateOfBirth: new Date(),
     gender: "",
-    address: "12th Super",
-    occupation: "Software Engineer",
-    emergencyContactNumber: "0978765432",
-    emergencyContactName: "Super Duper",
+    address: "",
+    occupation: "",
+    emergencyContactNumber: "",
+    emergencyContactName: "",
     primaryPhysician: "",
-    insuranceProvider: "Super Safe",
-    insurancePolicyNumber: "ADB123324",
+    insuranceProvider: "",
+    insurancePolicyNumber: "",
     allergies: "",
     currentMedication: "",
     familyMedicalHistory: "",
     pastMedicalHistory: "",
     identificationType: "",
-    identificationNumber: "12345678",
+    identificationNumber: "",
     identificationDocument: [],
+    treatmentConsent: false,
+    privacyConsent: false,
+    disclosureConsent: false,
 }

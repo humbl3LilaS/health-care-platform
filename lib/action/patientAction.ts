@@ -14,6 +14,7 @@ import {RegisterFormSchemaType} from "@/lib/validation/formSchema";
 import {InputFile} from "node-appwrite/file";
 import {CreateUserParams} from "@/types";
 
+//TODO: Error handling with custom object
 export const createUser = async (user: CreateUserParams) => {
     try {
         const phoneNumber = "+95" + user.phone.substring(1);
@@ -55,7 +56,7 @@ export const registerPatient = async ({userId, payload, formData}: {
             return false;
         }
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const {identificationDocument, ...rest} = payload;
+        const {treatmentConsent, identificationDocument, ...rest} = payload;
         const patient = await databases.createDocument(
             DB_ID!,
             PATIENT_COLLECTION!,
