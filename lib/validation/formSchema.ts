@@ -43,11 +43,11 @@ export const RegisterFormSchema = z.object(
         familyMedicalHistory: z.string().optional(),
         pastMedicalHistory: z.string().optional(),
         identificationType: z.string({required_error: "Please select your Identification Type"}),
-        identificationNumber: z.string({required_error: "Please provider your identification nubmer"}),
+        identificationNumber: z.string({required_error: "Please provider your identification number"}),
         identificationDocument: z.custom<File[]>()
                                  .refine(
                                      arg => arg.length > 0,
-                                     {message: "Please upload document for further indetification"}
+                                     {message: "Please upload document for further identification"}
                                  ),
         treatmentConsent: z.boolean()
                            .refine(arg => arg, {message: "We can treat you if you don't consent treatment"}),
@@ -82,4 +82,22 @@ export const RegisterFormDefaultValues: WithRequired<RegisterFormSchemaType> = {
     treatmentConsent: false,
     privacyConsent: false,
     disclosureConsent: false,
+}
+
+export const AppointmentFormSchema = z.object(
+    {
+        primaryPhysician: z.string({required_error: "Doctor is required"}),
+        reason: z.string({required_error: "Need to provide the reason"}),
+        note: z.string().optional(),
+        schedule: z.date({required_error: "Please provide the date of appointment date"}),
+    }
+)
+
+export type AppointmentFormSchemaType = Zod.infer<typeof AppointmentFormSchema>;
+
+export const AppointmentFormDefaultValues: WithRequired<AppointmentFormSchemaType> = {
+    primaryPhysician: "",
+    reason: "",
+    note: "",
+    schedule: new Date(),
 }
