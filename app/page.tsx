@@ -1,11 +1,16 @@
 import Image from "next/image";
 import PatientForm from "@/components/form/PatientForm";
 import Link from "next/link";
+import PasskeyModel from "@/components/PasskeyModel";
 
 
-export default function Home() {
+export default async function Home({searchParams}: { searchParams: Promise<{ isAdmin: string }> }) {
+    const isAdmin = (
+        await searchParams
+    ).isAdmin === "true";
     return (
         <div className={"h-screen max-h-screen flex"}>
+            {isAdmin && <PasskeyModel open={isAdmin}/>}
             <section className={"container my-auto remove-scrollbar"}>
                 <div className={"max-w-[496px] sub-container"}>
 
@@ -26,7 +31,7 @@ export default function Home() {
 
                     <div className={"mt-20 flex justify-between text-14-regular"}>
                         <p className={"justify-items-end text-dark-600 xl:text-left"}>&copy; {new Date().getFullYear()} CarePulse</p>
-                        <Link href={"/?admin=true"} className={"text-green-500"}>Admin</Link>
+                        <Link href={"/?isAdmin=true"} className={"text-green-500"}>Admin</Link>
                     </div>
                 </div>
             </section>
