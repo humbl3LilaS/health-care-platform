@@ -101,3 +101,15 @@ export const AppointmentFormDefaultValues: WithRequired<AppointmentFormSchemaTyp
     note: "",
     schedule: new Date(),
 }
+
+export const AppointmentUpdateFormSchema = z.object(
+    {
+        primaryPhysician: z.string({required_error: "Doctor is required"}),
+        reason: z.string({required_error: "Need to provide the reason"}),
+        note: z.string().optional(),
+        schedule: z.date({required_error: "Please provide the date of appointment date"}),
+        cancellationReason: z.string().min(1),
+    }
+)
+
+export type AppointmentUpdateFormSchemaType = Zod.infer<typeof AppointmentUpdateFormSchema>;

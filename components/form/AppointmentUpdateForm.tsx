@@ -1,53 +1,56 @@
 "use client"
-
-import {SubmitHandler, useForm} from "react-hook-form";
 import {
-    AppointmentFormDefaultValues,
-    AppointmentFormSchema,
-    AppointmentFormSchemaType
+    AppointmentFormSchemaType,
+    AppointmentUpdateFormSchema,
+    AppointmentUpdateFormSchemaType
 } from "@/lib/validation/formSchema";
+import {SubmitHandler, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {Form} from "@/components/ui/form";
+import {useToast} from "@/hooks/use-toast";
 import CustomFormField, {FormFieldType} from "@/components/CustomFormField";
 import {DOCTORS} from "@/constants";
 import {SelectItem} from "@/components/ui/select";
 import Image from "next/image";
 import SubmitButton from "@/components/SubmitButton";
-import {useToast} from "@/hooks/use-toast";
-import {createAppointment} from "@/lib/action/appointmentAction";
+import {Form} from "@/components/ui/form";
+import {updateAppointment} from "@/lib/action/appointmentAction";
 import {useRouter} from "next/navigation";
 
-type AppointmentFormProps = {
-    userId: string;
-    patientId: string;
-    primaryPhysician?: string
+type AppointmentUpdateFormProps = {
+    defaultValue: Required<AppointmentUpdateFormSchemaType>
+    action: "schedule" | "cancel"
+    appointmentId: string;
 }
 
-
-const AppointmentForm = ({userId, primaryPhysician, patientId}: AppointmentFormProps) => {
-
-    const form = useForm<AppointmentFormSchemaType>(
+const AppointmentUpdateForm = ({defaultValue, appointmentId, action}: AppointmentUpdateFormProps) => {
+    const form = useForm<AppointmentUpdateFormSchemaType>(
         {
-            resolver: zodResolver(AppointmentFormSchema),
+            resolver: zodResolver(AppointmentUpdateFormSchema),
             mode: "onBlur",
             defaultValues: {
-                ...AppointmentFormDefaultValues,
-                primaryPhysician: primaryPhysician ?? AppointmentFormDefaultValues.primaryPhysician
-            }
+                ...defaultValue,
+                schedule: new Date(defaultValue.schedule),
+                cancellationReason: defaultValue.cancellationReason ?? "",
+                note: defaultValue.note ?? "",
+            },
         }
     )
-
     const {toast} = useToast();
-
     const router = useRouter();
 
     const onSubmit: SubmitHandler<AppointmentFormSchemaType> = async (value) => {
-        const appointment = await createAppointment({userId, patientId, payload: {...value}});
-        if (appointment) {
-            toast({title: "Appointment Created"});
-            router.push(`/patient/${userId}/new-appointment/success?appointmentId=${appointment.$id}`);
+        const updatedAppointment = await updateAppointment(
+            {
+                action,
+                payload: {...value},
+                appointmentId
+            }
+        )
+        if (updatedAppointment) {
+            toast({title: "Appointment Updated"});
+            router.refresh();
         } else {
-            toast({title: "Appointment Creation Failed", variant: "destructive"});
+            toast({title: "Failed Updating Appointment", variant: "destructive"});
         }
     }
 
@@ -92,6 +95,7 @@ const AppointmentForm = ({userId, primaryPhysician, patientId}: AppointmentFormP
                         fieldType={FormFieldType.TEXTAREA}
                         label={"Reason For Appointment"}
                         placeholder={"Enter reason for appointment"}
+                        disabled={true}
                     />
 
                     {/*comment*/}
@@ -99,22 +103,29 @@ const AppointmentForm = ({userId, primaryPhysician, patientId}: AppointmentFormP
                         name={"note"}
                         control={form.control}
                         fieldType={FormFieldType.TEXTAREA}
-                        label={"Comment/ Extra Information"}
+                        disabled={true}
+                        label={"Extra Information"}
                         placeholder={"Extra notes...."}
                     />
                 </div>
 
+                {action === "cancel" && <CustomFormField
+                    name={"cancellationReason"}
+                    control={form.control}
+                    fieldType={FormFieldType.TEXTAREA}
+                    label={"Reason For cancellation"}
+                    placeholder={"Extra notes...."}
+                />}
 
                 <SubmitButton
                     isSubmitting={form.formState.isSubmitting}
                     disabled={form.formState.isSubmitting}
                     className={"mt-4 mb-10"}
                 >
-                    Submit
+                    {action === "schedule" ? <span>Schedule Appointment</span> : <span>Cancel Appointment</span>}
                 </SubmitButton>
             </form>
         </Form>
     );
 };
-
-export default AppointmentForm;
+export default AppointmentUpdateForm;

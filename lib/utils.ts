@@ -1,5 +1,7 @@
 import {type ClassValue, clsx} from "clsx";
 import {twMerge} from "tailwind-merge";
+import {Appointment} from "@/types/appwrite.types";
+import {AppointmentCounts} from "@/types";
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -87,4 +89,14 @@ export function encryptKey(passkey: string) {
 
 export function decryptKey(passkey: string) {
     return atob(passkey);
+}
+
+export const extractCount = (appointment: Appointment[]): AppointmentCounts => {
+    return appointment.reduce((counts, appointment) => {
+        if (!counts[appointment.status]) {
+            return {...counts, [appointment.status]: 1};
+        } else {
+            return {...counts, [appointment.status]: counts[appointment.status] + 1};
+        }
+    }, {} as AppointmentCounts)
 }

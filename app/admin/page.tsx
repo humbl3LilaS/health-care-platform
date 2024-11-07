@@ -1,8 +1,16 @@
 import Link from "next/link";
 import Image from "next/image";
 import StatCard from "@/components/StatCard";
+import {getAppointments} from "@/lib/action/appointmentAction";
+import {extractCount} from "@/lib/utils";
+import DataTable from "@/components/DataTable";
+import {columns} from "@/components/Columns";
 
-const AdminDashboardPage = () => {
+
+const AdminDashboardPage = async () => {
+    const appointments = await getAppointments();
+    const appointmentsCounts = extractCount(appointments ?? []);
+
     return (
         <div className={"max-w-7xl mx-auto flex flex-col space-y-14 "}>
             <header className={"admin-header"}>
@@ -23,25 +31,27 @@ const AdminDashboardPage = () => {
                 <section className={"admin-stat"}>
                     <StatCard
                         type={"appointments"}
-                        count={10}
+                        count={appointmentsCounts.scheduled}
                         label={"Scheduled appointments"}
                         icon={"/assets/icons/appointments.svg"}
                     />
 
                     <StatCard
                         type={"pending"}
-                        count={10}
+                        count={appointmentsCounts.pending}
                         label={"Pending appointments"}
                         icon={"/assets/icons/pending.svg"}
                     />
 
                     <StatCard
                         type={"cancelled"}
-                        count={10}
+                        count={appointmentsCounts.cancelled}
                         label={"Cancelled appointments"}
                         icon={"/assets/icons/cancelled.svg"}
                     />
                 </section>
+
+                <DataTable columns={columns} data={appointments ?? []}/>
             </div>
         </div>
     );

@@ -31,22 +31,23 @@ type CustomFormFieldProps = {
     name: string;
     label?: string;
     placeholder?: string;
-    disabled?: boolean;
+
 } & (
     {
         fieldType: FormFieldType.INPUT,
         iconSrc?: string;
         iconAlt?: string;
-        type?: string
+        type?: string;
+        disabled?: boolean;
     } |
     { fieldType: FormFieldType.SELECT, optionRender: ReactNode | ReactNode[]; } |
     {
         fieldType: FormFieldType.RADIO_INPUT,
         option: string[]
     } |
-    { fieldType: FormFieldType.DATE_INPUT } | { fieldType: FormFieldType.TEXTAREA } | {
-    fieldType: FormFieldType.CHECKBOX
-}
+    { fieldType: FormFieldType.DATE_INPUT } |
+    { fieldType: FormFieldType.TEXTAREA; disabled?: boolean; } |
+    { fieldType: FormFieldType.CHECKBOX }
     )
 
 
@@ -72,6 +73,7 @@ const RenderInput = ({field, props}: {
                         {...field}
                         type={props.type ?? "text"}
                         className="shad-input border-0"
+                        disabled={props?.disabled}
                     />
                 </FormControl>
             </div>
@@ -142,6 +144,7 @@ const RenderInput = ({field, props}: {
                     placeholder={props.placeholder}
                     className={"shad-textArea"}
                     {...field}
+                    disabled={props?.disabled}
                 />
             </FormControl>
         case FormFieldType.CHECKBOX:
