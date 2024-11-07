@@ -58,76 +58,79 @@ const AppointmentUpdateForm = ({defaultValue, appointmentId, action}: Appointmen
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
 
-                <CustomFormField
-                    control={form.control}
-                    name={"primaryPhysician"}
-                    fieldType={FormFieldType.SELECT}
-                    label={"Doctor"}
-                    optionRender={
-                        DOCTORS.map((item) =>
-                                        <SelectItem value={item?.name} key={item?.name}>
-                                            <p className={"flex cursor-pointer items-center gap-2"}>
-                                                <Image src={item?.image}
-                                                       alt={item?.name}
-                                                       width={32}
-                                                       height={32}
-                                                       className={"rounded-full border border-dark-400"}
-                                                />
-                                                <span>{item?.name}</span>
-                                            </p>
-                                        </SelectItem>)
-                    }
-                />
 
-                {/*Appointment Date*/}
-                <CustomFormField
-                    name={"schedule"}
-                    control={form.control}
-                    fieldType={FormFieldType.DATE_INPUT}
-                    label={"Expected Appointment Date"}
-                    dateFormat={"MMMM dd, yyyy -  h:mm aa"}
-                    showTimeSelect={true}
-                />
-
-                <div className={"flex flex-col gap-6 xl:flex-row"}>
-                    {/*Reason for treatment*/}
-                    <CustomFormField
-                        name={"reason"}
-                        control={form.control}
-                        fieldType={FormFieldType.TEXTAREA}
-                        label={"Reason For Appointment"}
-                        placeholder={"Enter reason for appointment"}
-                        disabled={true}
-                    />
-
-                    {/*comment*/}
-                    <CustomFormField
-                        name={"note"}
-                        control={form.control}
-                        fieldType={FormFieldType.TEXTAREA}
-                        disabled={true}
-                        label={"Extra Information"}
-                        placeholder={"Extra notes...."}
-                    />
-                </div>
-
-                {action === "cancel" && <CustomFormField
+                {action === "cancel" ? <CustomFormField
                     name={"cancellationReason"}
                     control={form.control}
                     fieldType={FormFieldType.TEXTAREA}
                     label={"Reason For cancellation"}
                     placeholder={"Extra notes...."}
-                />}
+                /> : <>
+                     <CustomFormField
+                         control={form.control}
+                         name={"primaryPhysician"}
+                         fieldType={FormFieldType.SELECT}
+                         label={"Doctor"}
+                         optionRender={
+                             DOCTORS.map((item) =>
+                                             <SelectItem value={item?.name} key={item?.name}>
+                                                 <p className={"flex cursor-pointer items-center gap-2"}>
+                                                     <Image src={item?.image}
+                                                            alt={item?.name}
+                                                            width={32}
+                                                            height={32}
+                                                            className={"rounded-full border border-dark-400"}
+                                                     />
+                                                     <span>{item?.name}</span>
+                                                 </p>
+                                             </SelectItem>)
+                         }
+                     />
+
+                     {/*Appointment Date*/}
+                     <CustomFormField
+                         name={"schedule"}
+                         control={form.control}
+                         fieldType={FormFieldType.DATE_INPUT}
+                         label={"Expected Appointment Date"}
+                         dateFormat={"MMMM dd, yyyy -  h:mm aa"}
+                         showTimeSelect={true}
+                     />
+
+                     <div className={"flex flex-col gap-6 xl:flex-row"}>
+                         {/*Reason for treatment*/}
+                         <CustomFormField
+                             name={"reason"}
+                             control={form.control}
+                             fieldType={FormFieldType.TEXTAREA}
+                             label={"Reason For Appointment"}
+                             placeholder={"Enter reason for appointment"}
+                             disabled={true}
+                         />
+
+                         {/*comment*/}
+                         <CustomFormField
+                             name={"note"}
+                             control={form.control}
+                             fieldType={FormFieldType.TEXTAREA}
+                             disabled={true}
+                             label={"Extra Information"}
+                             placeholder={"Extra notes...."}
+                         />
+                     </div>
+                 </>
+                }
 
                 <SubmitButton
                     isSubmitting={form.formState.isSubmitting}
                     disabled={form.formState.isSubmitting}
-                    className={"mt-4 mb-10"}
+                    className={`mt-4 mb-10 ${action === "cancel" && "shad-danger-btn"}`}
                 >
                     {action === "schedule" ? <span>Schedule Appointment</span> : <span>Cancel Appointment</span>}
                 </SubmitButton>
             </form>
         </Form>
-    );
+    )
+        ;
 };
 export default AppointmentUpdateForm;

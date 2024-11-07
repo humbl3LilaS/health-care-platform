@@ -10,14 +10,14 @@ import {
 import {DataColumn} from "@/types";
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
 import {useState} from "react";
+import {Button} from "@/components/ui/button";
+import {ArrowLeft, ArrowRight} from "lucide-react";
 
 interface DataTableProps<TData> {
     columns: DataColumn<TData>
     data: TData[]
 }
 
-
-//export const columns: ((AccessorKeyColumnDefBase<Appointment, Patient> & Partial<IdIdentifier<Appointment, Patient>>) | (AccessorKeyColumnDefBase<...> & Partial<...>) | (AccessorKeyColumnDefBase<...> & Partial<...>))[]
 
 function DataTable<TData>({data, columns}: DataTableProps<TData>) {
 
@@ -40,12 +40,12 @@ function DataTable<TData>({data, columns}: DataTableProps<TData>) {
         }
     )
 
-    return <div>
-        <Table>
-            <TableHeader>
+    return <div className={"data-table"}>
+        <Table className={"shad-table"}>
+            <TableHeader className={"bg-dark-200"}>
                 {
                     table.getHeaderGroups().map((headerGroup) =>
-                                                    <TableRow key={headerGroup.id}>
+                                                    <TableRow key={headerGroup.id} className={"shad-table-row-header"}>
                                                         {headerGroup.headers.map((header) => {
                                                             return <TableHead key={header.id}>
                                                                 {header.isPlaceholder ? null
@@ -65,6 +65,7 @@ function DataTable<TData>({data, columns}: DataTableProps<TData>) {
                         <TableRow
                             key={row.id}
                             data-state={row.getIsSelected() && "selected"}
+                            className={"shad-table-row"}
                         >
                             {row.getVisibleCells().map((cell) => (
                                 <TableCell key={cell.id}>
@@ -84,21 +85,21 @@ function DataTable<TData>({data, columns}: DataTableProps<TData>) {
 
 
         </Table>
-        <div className={"flex items-center justify-between"}>
-            <button
-                className="border rounded p-1"
+        <div className={"p-4 flex items-center justify-between"}>
+            <Button
+                className="shad-gray-btn"
                 onClick={() => table.previousPage()}
                 disabled={!table.getCanPreviousPage()}
             >
-                {'<'}
-            </button>
-            <button
-                className="border rounded p-1"
+                <ArrowLeft/> <span>Previous</span>
+            </Button>
+            <Button
+                className="shad-gray-btn"
                 onClick={() => table.nextPage()}
                 disabled={!table.getCanNextPage()}
             >
-                {'>'}
-            </button>
+                <span>Next</span> <ArrowRight/>
+            </Button>
         </div>
 
     </div>

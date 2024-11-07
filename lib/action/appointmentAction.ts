@@ -70,21 +70,17 @@ export const updateAppointment = async ({payload, appointmentId, action}: {
     action: "schedule" | "cancel"
 }) => {
     try {
-        console.log({
-                        ...payload,
-                        status: action === "schedule" ? "schedule" : "cancel"
-                    })
-        console.log(appointmentId)
         const appointment = await databases.updateDocument(
             DB_ID!,
             APPOINTMENT_COLLECTION!,
             appointmentId,
             {
                 ...payload,
-                status: action === "schedule" ? "scheduled" : "cancelled"
+                status: action === "schedule" ? "scheduled" : "cancelled",
+                cancellationReason: action === "cancel" ? payload.cancellationReason : null
             }
         )
-        if(!appointment) {
+        if (!appointment) {
             return undefined
         }
         return appointment

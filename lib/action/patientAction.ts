@@ -68,6 +68,11 @@ export const registerPatient = async ({userId, payload, formData}: {
                 identificationDocumentUrl: `${ENDPOINT!}/storage/buckets/${BUCKET_ID!}/files/${file.$id}/view?project=${PROJECT_ID!}`,
             }
         );
+
+        if (!patient) {
+            return false;
+        }
+
         return patient;
     } catch (error) {
         console.log(error);
