@@ -78,7 +78,7 @@ export const registerPatient = async ({userId, payload, formData}: {
 
 export const getPatient = async (userId: string) => {
     try {
-        const patient = await databases.listDocuments(DB_ID!, PATIENT_COLLECTION!, [Query.equal("userId", userId)]);
+        const patient = await databases.listDocuments(DB_ID!, PATIENT_COLLECTION!, [Query.equal("$id", userId)]);
         if (!patient) {
             return undefined;
         }

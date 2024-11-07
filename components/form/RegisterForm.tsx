@@ -38,7 +38,9 @@ const RegisterForm = ({user}: RegisterFormProps) => {
     const router = useRouter();
 
     const onSubmit: SubmitHandler<RegisterFormSchemaType> = async (value) => {
+        console.log("value", value)
         const patientInfo = extractValidValue(value) as RegisterFormSchemaType;
+        console.log("extracted value", patientInfo);
         const formData = new FormData();
         if (patientInfo.identificationDocument && patientInfo.identificationDocument.length > 0) {
             const blobFile = new Blob(
@@ -53,7 +55,7 @@ const RegisterForm = ({user}: RegisterFormProps) => {
         const patient = await registerPatient({userId, payload: {...patientInfo}, formData});
         if (patient) {
             toast({title: "Patient Creation Success"})
-                router.push(`/patient/${user.$id}/new-appointment`)
+                router.push(`/patient/${patient.$id}/new-appointment`)
         } else {
             toast({title: "Patient Creation Failed", variant: "destructive"})
         }
