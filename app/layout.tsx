@@ -31,7 +31,7 @@ export default function RootLayout({
             attribute="class"
             defaultTheme="dark"
         >
-            {children}
+            <main>{children}</main>
         </ThemeProvider>
         <Toaster/>
         </body>

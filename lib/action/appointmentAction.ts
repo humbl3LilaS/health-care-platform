@@ -21,11 +21,27 @@ export const createAppointment = async ({userId, patientId, payload}: {
             ID.unique(),
             {...appointmentData}
         )
-        if(!appointment) {
+        if (!appointment) {
             return undefined;
         }
         return appointment;
     } catch (error) {
         console.log(error)
+    }
+}
+export const getAppointmentById = async (appointmentId: string) => {
+    try {
+        const appointment = await databases.getDocument(
+            DB_ID!,
+            APPOINTMENT_COLLECTION!,
+            appointmentId
+        );
+
+        if (!appointment) {
+            return undefined;
+        }
+        return appointment;
+    } catch (error) {
+        console.log("Error fetching appointment by Id", error)
     }
 }
