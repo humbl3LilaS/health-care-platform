@@ -4,12 +4,8 @@ import {Input} from "@/components/ui/input";
 import Image from "next/image";
 import {RadioGroup, RadioGroupItem} from "@/components/ui/radio-group";
 import {Label} from "@/components/ui/label";
-import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
-import {CalendarIcon} from "lucide-react";
-import {format} from "date-fns";
-import {Button} from "@/components/ui/button";
-import {Calendar} from "@/components/ui/calendar";
-import {cn} from "@/lib/utils";
+import ReactDatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import {Select, SelectContent, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {Textarea} from "@/components/ui/textarea";
 import {ReactNode} from "react";
@@ -45,7 +41,7 @@ type CustomFormFieldProps = {
         fieldType: FormFieldType.RADIO_INPUT,
         option: string[]
     } |
-    { fieldType: FormFieldType.DATE_INPUT } |
+    { fieldType: FormFieldType.DATE_INPUT; showTimeSelect?: boolean; dateFormat?: string } |
     { fieldType: FormFieldType.TEXTAREA; disabled?: boolean; } |
     { fieldType: FormFieldType.CHECKBOX }
     )
@@ -102,31 +98,27 @@ const RenderInput = ({field, props}: {
                 </RadioGroup>
             </FormControl>;
         case FormFieldType.DATE_INPUT:
-            return <Popover>
+            console.log("date input render")
+            return <div className={"flex rounded-md border border-dark-500 bg-dark-400"}>
+                <Image
+                    src="/assets/icons/calendar.svg"
+                    height={24}
+                    width={24}
+                    alt="user"
+                    className="ml-2"
+                />
                 <FormControl>
-                    <PopoverTrigger asChild={true}>
-                        <Button
-                            variant={"outline"}
-                            className={cn(
-                                "w-full justify-start shad-input text-left font-normal",
-                                field.value && "text-muted-foreground"
-                            )}
-                        >
-                            <CalendarIcon className="mr-2 h-4 w-4"/>
-                            {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
-                        </Button>
-                    </PopoverTrigger>
-                </FormControl>
-                <PopoverContent className="w-auto p-0">
-                    <Calendar
-                        mode="single"
+                    <ReactDatePicker
+                        showTimeSelect={props.showTimeSelect ?? false}
                         selected={field.value}
-                        onSelect={field.onChange}
-                        initialFocus
-                        className={"bg-dark-400 rounded-lg"}
+                        // @ts-expect-error I don't know how to type it yet
+                        onChange={(date: Date) => field.onChange(date)}
+                        timeInputLabel="Time:"
+                        dateFormat={props.dateFormat ?? "MMMM dd, yyyy"}
+                        wrapperClassName="date-picker"
                     />
-                </PopoverContent>
-            </Popover>
+                </FormControl>
+            </div>
         case FormFieldType.SELECT:
             return <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl className={"shad-select-trigger"}>

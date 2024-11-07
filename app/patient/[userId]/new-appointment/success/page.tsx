@@ -22,7 +22,7 @@ const SuccessPage = async ({searchParams, params}: SuccessPageProps) => {
         if (!appointment || !userId) return notFound();
 
         const doctor = DOCTORS.filter(doc => doc.name === appointment.primaryPhysician)[0] ?? []
-        console.log(doctor)
+
 
         return (
             <div className={"h-screen max-h-screen px-[5%] flex"}>

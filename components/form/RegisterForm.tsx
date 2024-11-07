@@ -47,7 +47,6 @@ const RegisterForm = ({user}: RegisterFormProps) => {
             formData.append("fileName", patientInfo.identificationDocument[0].name)
         }
         const userId = user.$id;
-        console.log("userId in client", userId)
         if (!userId) {
             return toast({title: "no user id"})
         }

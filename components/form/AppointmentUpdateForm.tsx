@@ -85,6 +85,8 @@ const AppointmentUpdateForm = ({defaultValue, appointmentId, action}: Appointmen
                     control={form.control}
                     fieldType={FormFieldType.DATE_INPUT}
                     label={"Expected Appointment Date"}
+                    dateFormat={"MMMM dd, yyyy -  h:mm aa"}
+                    showTimeSelect={true}
                 />
 
                 <div className={"flex flex-col gap-6 xl:flex-row"}>

@@ -1,6 +1,8 @@
 import {z} from "zod";
 import {GENDER} from "@/constants";
 import {WithRequired} from "@/types";
+import {differenceInDays} from "date-fns";
+
 
 export const PatientFormSchema = z.object(
     {
@@ -26,7 +28,7 @@ export const RegisterFormSchema = z.object(
                 .email({message: 'Invalid Email'}),
         phone: z.string({required_error: "Phone number is required"})
                 .regex(/^09\d{9}$/, {message: 'Invalid Phone number'}),
-        dateOfBirth: z.date(),
+        dateOfBirth: z.date().refine(date => differenceInDays(date, new Date()) < 0, {message: "Invalid Date of Birth"}),
         gender: z.string().refine(input => GENDER.includes(input), {message: 'Gender is required'}),
         address: z.string().max(150, {message: 'Too long'}).optional(),
         occupation: z.string().max(150, {message: 'Too long'}).optional(),
@@ -89,7 +91,8 @@ export const AppointmentFormSchema = z.object(
         primaryPhysician: z.string({required_error: "Doctor is required"}),
         reason: z.string({required_error: "Need to provide the reason"}),
         note: z.string().optional(),
-        schedule: z.date({required_error: "Please provide the date of appointment date"}),
+        schedule: z.date({required_error: "Please provide the date of appointment date"})
+                   .refine(date => differenceInDays(date, new Date()) > 0, {message: "Invalid Appointment Date"}),
     }
 )
 
@@ -107,7 +110,8 @@ export const AppointmentUpdateFormSchema = z.object(
         primaryPhysician: z.string({required_error: "Doctor is required"}),
         reason: z.string({required_error: "Need to provide the reason"}),
         note: z.string().optional(),
-        schedule: z.date({required_error: "Please provide the date of appointment date"}),
+        schedule: z.date({required_error: "Please provide the date of appointment date"})
+                   .refine(date => differenceInDays(date, new Date()) > 0, {message: "Invalid Appointment Date"}),
         cancellationReason: z.string().min(1),
     }
 )
